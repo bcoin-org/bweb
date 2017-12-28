@@ -17,9 +17,10 @@ server.on('socket', (socket) => {
 });
 
 server.use(server.bodyParser());
+server.use(server.cookieParser());
 server.use(server.jsonRPC());
 server.use(server.router());
-server.use('/static', server.file(__dirname));
+server.use('/static', server.fileServer(__dirname));
 
 server.get('/', async (req, res) => {
   res.html(200, '<a href="/static">static</a>');
