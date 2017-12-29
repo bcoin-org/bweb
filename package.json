@@ -23,7 +23,7 @@
     "webpack": "webpack --config webpack.config.js"
   },
   "dependencies": {
-    "bsock": "^0.0.0"
+    "bsock": "~0.0.0"
   },
   "devDependencies": {
     "babelify": "^8.0.0",
