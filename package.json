@@ -30,6 +30,7 @@
     "node": ">=8.0.0"
   },
   "browser": {
-    "./lib/server": "./lib/server-browser.js"
+    "./lib/server": "./lib/server-browser.js",
+    "./lib/middleware/index": "./lib/middleware/index-browser.js"
   }
 }
