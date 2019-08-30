@@ -15,6 +15,9 @@
   },
   "author": "Christopher Jeffrey <chjjeffrey@gmail.com>",
   "main": "./lib/bweb.js",
+  "bin": {
+    "bweb": "./bin/bweb"
+  },
   "scripts": {
     "lint": "eslint lib/ test/ || exit 0",
     "test": "bmocha --reporter spec test/*-test.js"
