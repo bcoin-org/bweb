@@ -20,7 +20,9 @@
   },
   "scripts": {
     "lint": "eslint lib/ test/ || exit 0",
-    "test": "bmocha --reporter spec test/*-test.js"
+    "lint-ci": "eslint lib/ test/",
+    "test": "bmocha --reporter spec test/*-test.js",
+    "test-ci": "nyc -a -n 'lib/**/*.js' --reporter=lcov --reporter=text npm run test"
   },
   "dependencies": {
     "bsert": "~0.0.10",
