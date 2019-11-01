@@ -1,9 +1,12 @@
-/**
- *
+/*!
+ * test/http-test.js - HTTP/1.1 tests for bweb
+ * Copyright (c) 2019, Mark Tyneway (MIT License).
+ * https://github.com/bcoin-org/bweb
  */
 
+'use strict';
+
 const assert = require('bsert');
-const qs = require('querystring');
 const {Server} = require('../lib/bweb');
 const {
   Client,
@@ -12,19 +15,19 @@ const {
 } = require('./utils/common');
 
 const port = 9009;
-
 let client, server;
 let seen = false;
+
 describe('HTTP/1.1 Tests', function() {
   before(() => {
     server = new Server({
-      port: port,
+      port: port
     });
 
     client = new Client();
 
     server.use(server.router());
-  })
+  });
 
   beforeEach(async () => {
     server.on('error', async (err) => {
@@ -55,6 +58,9 @@ describe('HTTP/1.1 Tests', function() {
       resDeepEqual('httpVersionMajor', 1),
       resDeepEqual('httpVersionMinor', 1)
     ]);
+
+    assert.deepEqual(res, '');
+    assert.equal(seen, true);
   });
 
   it('should handle GET request', async () => {
