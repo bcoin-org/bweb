@@ -1,3 +1,11 @@
+/*!
+ * test/util/common.js - Common test helpers for bweb.
+ * Copyright (c) 2019, Mark Tyneway (MIT License).
+ * https://github.com/bcoin-org/bweb
+ */
+
+'use strict';
+
 const assert = require('bsert');
 
 class Client {
@@ -7,9 +15,7 @@ class Client {
 
   async request(options, assertions = []) {
     assert(Array.isArray(assertions));
-    let data = options.data;
 
-    let req, res;
     return new Promise((resolve, reject) => {
       const req = this.http.request(options, (res) => {
         res.setEncoding('utf8');
@@ -39,8 +45,8 @@ class Client {
         reject(e);
       });
 
-      if (data)
-        req.write(data);
+      if (options.data)
+        req.write(options.data);
       req.end();
     });
   }
@@ -49,14 +55,14 @@ class Client {
 function resDeepEqual(a, b) {
   return function(req, res) {
     assert.deepEqual(res[a], b);
-  }
+  };
 }
 
 function resHeaderDeepEqual(a, b) {
   return function(req, res) {
     const {headers} = res;
     assert.deepEqual(headers[a], b);
-  }
+  };
 }
 
 exports.Client = Client;

@@ -1,5 +1,7 @@
-/**
- *
+/*!
+ * test/response-test.js - Response tests for bweb
+ * Copyright (c) 2019, Mark Tyneway (MIT License).
+ * https://github.com/bcoin-org/bweb
  */
 
 'use strict';
@@ -17,19 +19,19 @@ const {
 } = require('./utils/common');
 
 const port = 9119;
-
 let client, server;
 let seen = false;
+
 describe('Response', function() {
   before(() => {
     server = new Server({
-      port: port,
+      port: port
     });
 
     client = new Client();
 
     server.use(server.router());
-  })
+  });
 
   beforeEach(async () => {
     server.on('error', async (err) => {
@@ -46,7 +48,6 @@ describe('Response', function() {
 
   it('should return json', async () => {
     const json = {foo: 'bar'};
-    const str = JSON.stringify(json, null, 2);
 
     server.get('/foo', async (req, res) => {
       seen = true;

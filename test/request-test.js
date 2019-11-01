@@ -1,33 +1,30 @@
-/**
- *
+/*!
+ * test/request-test.js - Request tests for bweb
+ * Copyright (c) 2019, Mark Tyneway (MIT License).
+ * https://github.com/bcoin-org/bweb
  */
 
 'use strict';
 
 const {Server} = require('../lib/bweb');
 const assert = require('bsert');
-const {
-  Client,
-  resDeepEqual,
-  resHeaderDeepEqual
-} = require('./utils/common');
+const {Client} = require('./utils/common');
 const Request = require('../lib/request');
 
 const port = 9219;
-
 let client, server;
 let seen = false;
 
 describe('Request', function() {
   before(() => {
     server = new Server({
-      port: port,
+      port: port
     });
 
     client = new Client();
 
     server.use(server.router());
-  })
+  });
 
   beforeEach(async () => {
     server.on('error', async (err) => {
@@ -78,6 +75,7 @@ describe('Request', function() {
     });
 
     assert.equal(seen, true);
+    assert.deepEqual(res, '');
   });
 
   it('should navigate', async () => {
@@ -96,6 +94,7 @@ describe('Request', function() {
       assert.deepEqual(req.query, query);
 
       seen = true;
+      hres.end();
     });
 
     const res = await client.request({
@@ -107,5 +106,6 @@ describe('Request', function() {
     });
 
     assert(seen);
+    assert.deepEqual(res, '');
   });
 });

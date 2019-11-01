@@ -1,5 +1,7 @@
-/**
- *
+/*!
+ * test/router-test.js - Router tests for bweb
+ * Copyright (c) 2019, Mark Tyneway (MIT License).
+ * https://github.com/bcoin-org/bweb
  */
 
 'use strict';
@@ -9,11 +11,9 @@ const Router = require('../lib/router');
 const Route = require('../lib/route');
 const Hook = require('../lib/hook');
 
-// noop handler function with arity 2
-function handle(a, b) {};
-
 describe('Router', function() {
   let router;
+
   beforeEach(() => {
     router = new Router();
   });
@@ -64,3 +64,6 @@ describe('Router', function() {
     assert.deepEqual(router.hooks[0], new Hook('/', handle));
   });
 });
+
+// noop handler function with arity 2
+function handle(a, b) {};

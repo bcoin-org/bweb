@@ -1,5 +1,7 @@
-/**
- * test/route.js - Route Object tests for bweb
+/*!
+ * test/route-test.js - Route tests for bweb
+ * Copyright (c) 2019, Mark Tyneway (MIT License).
+ * https://github.com/bcoin-org/bweb
  */
 
 'use strict';
@@ -26,7 +28,7 @@ describe('Route', function() {
     assert.ok(new Route('/', (a, b, c) => {}));
     assert.throws(() => new Route('/', (a, b, c, d) => {}));
     assert.throws(() => new Route('/', (a, b, c, d, e) => {}));
-  })
+  });
 
   describe('Route.match', function() {
     // path, target, expected
@@ -54,7 +56,7 @@ describe('Route', function() {
     for (const [path, target, expected] of mocks) {
       it(`${path} should ${expected ? '': 'not '}match ${target}`, () => {
         const route = new Route(target, noop);
-        const match = route.match(path)
+        const match = route.match(path);
 
         if (expected !== null)
           assert.deepEqual(expected, Object.assign({}, match));

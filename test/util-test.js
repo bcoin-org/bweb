@@ -1,5 +1,7 @@
-/**
- *
+/*!
+ * test/util-test.js - Utility tests for bweb
+ * Copyright (c) 2019, Mark Tyneway (MIT License).
+ * https://github.com/bcoin-org/bweb
  */
 
 'use strict';
@@ -32,7 +34,6 @@ describe('Utils', function() {
     });
   });
 
-
   describe('parseForm', () => {
     it('should parse a querystring', () => {
       const form = parseForm('a=b', 1);
@@ -40,12 +41,12 @@ describe('Utils', function() {
       const expect = Object.create(null);
       expect.a = 'b';
 
-      assert.deepEqual(form, expect)
+      assert.deepEqual(form, expect);
     });
 
     it('should parse empty querystring', () => {
       const form = parseForm('', 1);
-      assert(form)
+      assert(form);
     });
 
     it('should fail when too', () => {
@@ -66,7 +67,7 @@ describe('Utils', function() {
     });
 
     it('should detect non ascii', () => {
-      assert(!isAscii('f��bar'))
+      assert(!isAscii('f��bar'));
     });
   });
 });
