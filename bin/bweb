@@ -18,7 +18,7 @@ const {argv, stdout, stderr, exit} = process;
  * Constants
  */
 
-const VERSION = '0.1.9';
+const VERSION = '0.1.10';
 
 const HELP = `
   Usage: bweb [options] [file]
