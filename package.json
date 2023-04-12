@@ -19,17 +19,16 @@
     "bweb": "./bin/bweb"
   },
   "scripts": {
-    "lint": "eslint lib/ test/ || exit 0",
-    "lint-ci": "eslint lib/ test/",
+    "lint": "eslint lib/ test/",
     "test": "bmocha --reporter spec test/*-test.js",
     "test-ci": "nyc -a -n 'lib/**/*.js' --reporter=lcov --reporter=text npm run test"
   },
   "dependencies": {
     "bsert": "~0.0.10",
-    "bsock": "~0.1.8"
+    "bsock": "~0.1.9"
   },
   "devDependencies": {
-    "bmocha": "^2.1.0"
+    "bmocha": "^2.1.8"
   },
   "engines": {
     "node": ">=8.0.0"
