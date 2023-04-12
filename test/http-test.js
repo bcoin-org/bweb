@@ -49,7 +49,7 @@ describe('HTTP/1.1 Tests', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       method: 'GET',
       path: '/'
@@ -70,7 +70,7 @@ describe('HTTP/1.1 Tests', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       method: 'GET',
       path: '/'
@@ -92,7 +92,7 @@ describe('HTTP/1.1 Tests', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       method: 'POST',
       path: '/foo'
@@ -114,7 +114,7 @@ describe('HTTP/1.1 Tests', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       method: 'PUT',
       path: '/bar'
@@ -136,7 +136,7 @@ describe('HTTP/1.1 Tests', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       method: 'DELETE',
       path: '/lol'
@@ -158,7 +158,7 @@ describe('HTTP/1.1 Tests', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       method: 'PATCH',
       path: '/test'
@@ -180,7 +180,7 @@ describe('HTTP/1.1 Tests', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       method: 'POST',
       path: '/'

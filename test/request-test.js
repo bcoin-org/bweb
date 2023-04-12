@@ -67,7 +67,7 @@ describe('Request', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       headers: {},
       method: 'GET',
@@ -98,7 +98,7 @@ describe('Request', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       headers: {},
       method: 'POST',

@@ -55,7 +55,7 @@ describe('Response', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       method: 'GET',
       path: '/foo'
@@ -80,7 +80,7 @@ describe('Response', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       method: 'GET',
       path: '/text'
@@ -105,7 +105,7 @@ describe('Response', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       method: 'GET',
       path: '/buf'
@@ -131,7 +131,7 @@ describe('Response', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       method: 'GET',
       path: '/form'
@@ -156,7 +156,7 @@ describe('Response', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       method: 'GET',
       path: '/html'
@@ -190,7 +190,7 @@ describe('Response', function() {
     });
 
     const res = await client.request({
-      hostname: 'localhost',
+      hostname: '127.0.0.1',
       port: port,
       method: 'GET',
       path: '/file'
