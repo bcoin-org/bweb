@@ -197,9 +197,6 @@ describe('HTTP/1.1 Tests', function() {
   });
 
   it('should update closed when client closes after request', async () => {
-    let closed = null;
-    let serverError = null;
-    let requestError = null;
     const requestOpts = {
       hostname: '127.0.0.1',
       port: PORT,
@@ -207,15 +204,29 @@ describe('HTTP/1.1 Tests', function() {
       path: '/timeout'
     };
 
+    let closed = null;
+
+    /**
+     * NOTE:
+     *  Error event on abort was introduces in Node.js v15
+     *  So anything below wont throw an error on request.
+     *  https://github.com/nodejs/node/pull/33172
+     *  So this will be comment rn.
+     */
+
+    // let serverError = null;
+    // let requestError = null;
+
     server.removeAllListeners('error');
 
+    // Consume errors, even though it's not guaranteed they will fire.
     server.on('error', (e) => {
-      serverError = e;
+      // serverError = e;
     });
 
     server.on('request', (req, res) => {
       req.on('error', (e) => {
-        requestError = e;
+        // requestError = e;
       });
     });
 
@@ -243,11 +254,11 @@ describe('HTTP/1.1 Tests', function() {
     assert(err);
     assert.strictEqual(err.code, 'ECONNRESET');
 
-    assert(serverError);
-    assert.strictEqual(serverError.code, 'ECONNRESET');
+    // assert(serverError);
+    // assert.strictEqual(serverError.code, 'ECONNRESET');
 
-    assert(requestError);
-    assert.strictEqual(requestError.code, 'ECONNRESET');
+    // assert(requestError);
+    // assert.strictEqual(requestError.code, 'ECONNRESET');
 
     assert.strictEqual(closed, true);
   });
