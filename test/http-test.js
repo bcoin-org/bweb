@@ -27,6 +27,19 @@ describe('HTTP/1.1 Tests', function() {
 
     client = new Client();
 
+    // NOTE: Body parser will no longer throw errors
+    // when connection is closed on TIMEOUT.
+    //
+    // request.pause() -> request.resume() -> request.pause() will
+    // actually no longer throw errors ,
+    // where just request.pause() (without body parser) will.
+    // TODO: Find the cause and also, maybe add wrapped request error handler.
+    //
+    // NOTE: Check note below about request.
+    server.use(server.bodyParser({
+      type: 'json'
+    }));
+
     server.use(server.router());
   });
 
@@ -39,7 +52,9 @@ describe('HTTP/1.1 Tests', function() {
   });
 
   afterEach(async () => {
-    await server.close();
+    if (server.opened)
+      await server.close();
+
     seen = false;
   });
 
@@ -207,6 +222,7 @@ describe('HTTP/1.1 Tests', function() {
     let closed = null;
 
     /**
+     * NOTE: Body parser above.
      * NOTE:
      *  Error event on abort was introduces in Node.js v15
      *  So anything below wont throw an error on request.
@@ -261,5 +277,23 @@ describe('HTTP/1.1 Tests', function() {
     // assert.strictEqual(requestError.code, 'ECONNRESET');
 
     assert.strictEqual(closed, true);
+  });
+
+  it('should return 400 on incorrect request body', async () => {
+    server.post('/badjson', async (req, res) => {
+      seen = true;
+      return res.end();
+    });
+
+    await client.request({
+      hostname: '127.0.0.1',
+      port: PORT,
+      method: 'POST',
+      path: '/badjson',
+      data: '{ "badjson": }'
+    }, [
+      resDeepEqual('statusCode', 400),
+      resDeepEqual('statusMessage', 'Bad Request')
+    ]);
   });
 });
