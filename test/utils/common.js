@@ -41,6 +41,10 @@ class Client {
         });
       });
 
+      req.on('timeout', () => {
+        req.destroy();
+      });
+
       req.on('error', (e) => {
         reject(e);
       });
@@ -65,7 +69,12 @@ function resHeaderDeepEqual(a, b) {
   };
 }
 
+function sleep(ms) {
+  assert(typeof ms === 'number');
+  return new Promise(r => setTimeout(r, ms));
+}
+
 exports.Client = Client;
 exports.resDeepEqual = resDeepEqual;
 exports.resHeaderDeepEqual = resHeaderDeepEqual;
-
+exports.sleep = sleep;

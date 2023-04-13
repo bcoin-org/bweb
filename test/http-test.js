@@ -11,17 +11,18 @@ const {Server} = require('../lib/bweb');
 const {
   Client,
   resDeepEqual,
-  resHeaderDeepEqual
+  resHeaderDeepEqual,
+  sleep
 } = require('./utils/common');
 
-const port = 9009;
+const PORT = 9009;
 let client, server;
 let seen = false;
 
 describe('HTTP/1.1 Tests', function() {
   before(() => {
     server = new Server({
-      port: port
+      port: PORT
     });
 
     client = new Client();
@@ -50,7 +51,7 @@ describe('HTTP/1.1 Tests', function() {
 
     const res = await client.request({
       hostname: '127.0.0.1',
-      port: port,
+      port: PORT,
       method: 'GET',
       path: '/'
     }, [
@@ -71,7 +72,7 @@ describe('HTTP/1.1 Tests', function() {
 
     const res = await client.request({
       hostname: '127.0.0.1',
-      port: port,
+      port: PORT,
       method: 'GET',
       path: '/'
     }, [
@@ -93,7 +94,7 @@ describe('HTTP/1.1 Tests', function() {
 
     const res = await client.request({
       hostname: '127.0.0.1',
-      port: port,
+      port: PORT,
       method: 'POST',
       path: '/foo'
     }, [
@@ -115,7 +116,7 @@ describe('HTTP/1.1 Tests', function() {
 
     const res = await client.request({
       hostname: '127.0.0.1',
-      port: port,
+      port: PORT,
       method: 'PUT',
       path: '/bar'
     }, [
@@ -137,7 +138,7 @@ describe('HTTP/1.1 Tests', function() {
 
     const res = await client.request({
       hostname: '127.0.0.1',
-      port: port,
+      port: PORT,
       method: 'DELETE',
       path: '/lol'
     }, [
@@ -159,7 +160,7 @@ describe('HTTP/1.1 Tests', function() {
 
     const res = await client.request({
       hostname: '127.0.0.1',
-      port: port,
+      port: PORT,
       method: 'PATCH',
       path: '/test'
     }, [
@@ -181,7 +182,7 @@ describe('HTTP/1.1 Tests', function() {
 
     const res = await client.request({
       hostname: '127.0.0.1',
-      port: port,
+      port: PORT,
       method: 'POST',
       path: '/'
     }, [
@@ -193,5 +194,61 @@ describe('HTTP/1.1 Tests', function() {
 
     assert.deepEqual(res, 'HTTP Error: 404.');
     assert.equal(seen, false);
+  });
+
+  it('should update closed when client closes after request', async () => {
+    let closed = null;
+    let serverError = null;
+    let requestError = null;
+    const requestOpts = {
+      hostname: '127.0.0.1',
+      port: PORT,
+      method: 'GET',
+      path: '/timeout'
+    };
+
+    server.removeAllListeners('error');
+
+    server.on('error', (e) => {
+      serverError = e;
+    });
+
+    server.on('request', (req, res) => {
+      req.on('error', (e) => {
+        requestError = e;
+      });
+    });
+
+    server.get('/timeout', async (req, res) => {
+      await sleep(200);
+      closed = res.closed;
+      return res.end();
+    });
+
+    await client.request(requestOpts);
+    assert.strictEqual(closed, false);
+
+    let err;
+    try {
+      await client.request({
+        ...requestOpts,
+        timeout: 100
+      });
+    } catch (e) {
+      err = e;
+    }
+
+    await sleep(300);
+
+    assert(err);
+    assert.strictEqual(err.code, 'ECONNRESET');
+
+    assert(serverError);
+    assert.strictEqual(serverError.code, 'ECONNRESET');
+
+    assert(requestError);
+    assert.strictEqual(requestError.code, 'ECONNRESET');
+
+    assert.strictEqual(closed, true);
   });
 });
