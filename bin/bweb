@@ -33,7 +33,7 @@ const HELP = `
     -k, --key <file>         set key file
     -c, --cert <file>        set cert file
     -a, --auth <user:pass>   set basic auth
-    -j, --jail               jail server
+    -u, --unjail             unjail server
 `;
 
 /*
@@ -99,7 +99,7 @@ function parseArgs() {
       __proto__: null,
       prefix: resolve('.'),
       useIndex: true,
-      jail: false
+      jail: true
     }
   };
 
@@ -203,9 +203,9 @@ function parseArgs() {
         break;
       }
 
-      case '-j':
-      case '--jail': {
-        options.file.jail = true;
+      case '-u':
+      case '--unjail': {
+        options.file.jail = false;
         break;
       }
 
