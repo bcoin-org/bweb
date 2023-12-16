@@ -16,6 +16,8 @@ class Client {
   async request(options, assertions = []) {
     assert(Array.isArray(assertions));
 
+    options.agent = false;
+
     return new Promise((resolve, reject) => {
       const req = this.http.request(options, (res) => {
         res.setEncoding('utf8');
@@ -34,8 +36,13 @@ class Client {
               res.body = Buffer.from(res.body);
           }
 
-          for (const assertion of assertions)
-            assertion(req, res);
+          try {
+            for (const assertion of assertions)
+              assertion(req, res);
+          } catch (e) {
+            reject(e);
+            return;
+          }
 
           resolve(res.body);
         });
@@ -51,6 +58,7 @@ class Client {
 
       if (options.data)
         req.write(options.data);
+
       req.end();
     });
   }

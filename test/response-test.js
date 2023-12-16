@@ -25,7 +25,8 @@ let seen = false;
 describe('Response', function() {
   before(() => {
     server = new Server({
-      port: port
+      port: port,
+      sockets: false
     });
 
     client = new Client();

@@ -22,7 +22,8 @@ let seen = false;
 describe('HTTP/1.1 Tests', function() {
   before(() => {
     server = new Server({
-      port: PORT
+      port: PORT,
+      sockets: false
     });
 
     client = new Client();
