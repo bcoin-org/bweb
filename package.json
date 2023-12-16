@@ -24,11 +24,11 @@
     "test-ci": "nyc -a -n 'lib/**/*.js' --reporter=lcov --reporter=text npm run test"
   },
   "dependencies": {
-    "bsert": "~0.0.10",
+    "bsert": "~0.0.12",
     "bsock": "~0.1.9"
   },
   "devDependencies": {
-    "bmocha": "^2.1.8"
+    "bmocha": "^2.1.10"
   },
   "engines": {
     "node": ">=8.0.0"
