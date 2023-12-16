@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "bsert": "~0.0.12",
-    "bsock": "~0.1.9"
+    "bsock": "~0.1.11"
   },
   "devDependencies": {
     "bmocha": "^2.1.10"
