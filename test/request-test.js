@@ -10,9 +10,10 @@ const {Server} = require('../lib/bweb');
 const assert = require('bsert');
 const {Client} = require('./utils/common');
 const Request = require('../lib/request');
+const Router = require('../lib/router');
 
 const port = 9219;
-let client, server;
+let client, server, routes;
 let seen = false;
 
 describe('Request', function() {
@@ -23,8 +24,10 @@ describe('Request', function() {
     });
 
     client = new Client();
+    routes = new Router();
 
     server.use(server.router());
+    server.use('/routes', server.router(routes));
   });
 
   beforeEach(async () => {
@@ -40,31 +43,26 @@ describe('Request', function() {
     seen = false;
   });
 
-  it('should construct with default values', async () => {
-    server.get('/', async (hreq, hres) => {
-      const req = new Request(hreq, hres, hreq.url);
-
-      assert.deepEqual(req.req, hreq);
-      assert.deepEqual(req.res, hres);
-      assert.deepEqual(req.socket, hreq.socket);
-      assert.deepEqual(req.type, 'bin');
-      assert.deepEqual(req.url, '/');
-      assert.deepEqual(req.pathname, '/');
-      assert.deepEqual(req.path, []);
-      assert.deepEqual(req.trailing, false);
-      assert.deepEqual(req.username, null);
-      assert.deepEqual(req.query, Object.create(null));
-      assert.deepEqual(req.params, Object.create(null));
-      assert.deepEqual(req.body, Object.create(null));
-      assert.deepEqual(req.cookies, Object.create(null));
-      assert.deepEqual(req.hasBody, false);
-      assert.deepEqual(req.readable, true);
-      assert.deepEqual(req.writable, false);
-      assert.deepEqual(req.admin, false);
-      assert.deepEqual(req.wallet, null);
+  it('should GET /', async () => {
+    server.get('/', async (req, res) => {
+      assert.strictEqual(req.type, 'bin');
+      assert.strictEqual(req.url, '/');
+      assert.strictEqual(req.pathname, '/');
+      assert.deepStrictEqual(req.path, []);
+      assert.strictEqual(req.trailing, false);
+      assert.strictEqual(req.username, null);
+      assert.deepStrictEqual(req.query, Object.create(null));
+      assert.deepStrictEqual(req.params, Object.create(null));
+      assert.deepStrictEqual(req.body, Object.create(null));
+      assert.deepStrictEqual(req.cookies, Object.create(null));
+      assert.strictEqual(req.hasBody, false);
+      assert.strictEqual(req.readable, true);
+      assert.strictEqual(req.writable, false);
+      assert.strictEqual(req.admin, false);
+      assert.strictEqual(req.wallet, null);
 
       seen = true;
-      return hres.end();
+      return res.end();
     });
 
     const res = await client.request({
@@ -75,24 +73,46 @@ describe('Request', function() {
       path: '/'
     });
 
-    assert.equal(seen, true);
-    assert.deepEqual(res, '');
+    assert.strictEqual(seen, true);
+    assert.strictEqual(res, '');
+  });
+
+  it('should GET /foo', async () => {
+    server.get('/foo', async (req, res) => {
+      assert.strictEqual(req.url, '/foo');
+      assert.strictEqual(req.pathname, '/foo');
+      assert.deepStrictEqual(req.path, ['foo']);
+      assert.strictEqual(req.trailing, true);
+      seen = true;
+      return res.end();
+    });
+
+    const res = await client.request({
+      hostname: '127.0.0.1',
+      port: port,
+      headers: {},
+      method: 'GET',
+      path: '/foo/'
+    });
+
+    assert.strictEqual(seen, true);
+    assert.strictEqual(res, '');
   });
 
   it('should navigate', async () => {
-    server.post('/foo', async (hreq, hres) => {
+    server.post('/foo/bar', async (hreq, hres) => {
       const req = new Request(hreq, hres, hreq.url);
-      req.navigate('/?foo=bar');
+      req.navigate('bar');
 
-      assert.deepEqual(req.url, '/?foo=bar');
-      assert.deepEqual(req.pathname, '/');
-      assert.deepEqual(req.path, []);
+      assert.strictEqual(req.url, '/foo/bar?a=1');
+      assert.strictEqual(req.pathname, '/bar');
+      assert.deepStrictEqual(req.path, ['bar']);
 
       // Must have null prototype.
       const query = Object.create(null);
-      query.foo = 'bar';
+      query.a = '1';
 
-      assert.deepEqual(req.query, query);
+      assert.deepStrictEqual(req.query, query);
 
       seen = true;
       hres.end();
@@ -103,10 +123,97 @@ describe('Request', function() {
       port: port,
       headers: {},
       method: 'POST',
-      path: '/foo'
+      path: '/foo/bar?a=1'
     });
 
-    assert(seen);
-    assert.deepEqual(res, '');
+    assert.strictEqual(seen, true);
+    assert.strictEqual(res, '');
+  });
+
+  it('should GET /routes', async () => {
+    routes.get('/', async (req, res) => {
+      assert.strictEqual(req.type, 'bin');
+      assert.strictEqual(req.url, '/routes');
+      assert.strictEqual(req.pathname, '/');
+      assert.deepStrictEqual(req.path, []);
+      assert.strictEqual(req.trailing, false);
+      assert.strictEqual(req.username, null);
+      assert.deepStrictEqual(req.query, Object.create(null));
+      assert.deepStrictEqual(req.params, Object.create(null));
+      assert.deepStrictEqual(req.body, Object.create(null));
+      assert.deepStrictEqual(req.cookies, Object.create(null));
+      assert.strictEqual(req.hasBody, false);
+      assert.strictEqual(req.readable, true);
+      assert.strictEqual(req.writable, false);
+      assert.strictEqual(req.admin, false);
+      assert.strictEqual(req.wallet, null);
+
+      seen = true;
+      return res.end();
+    });
+
+    const res = await client.request({
+      hostname: '127.0.0.1',
+      port: port,
+      headers: {},
+      method: 'GET',
+      path: '/routes'
+    });
+
+    assert.strictEqual(seen, true);
+    assert.strictEqual(res, '');
+  });
+
+  it('should GET /routes/foo', async () => {
+    routes.get('/foo', async (req, res) => {
+      assert.strictEqual(req.url, '/routes/foo');
+      assert.strictEqual(req.pathname, '/foo');
+      assert.deepStrictEqual(req.path, ['foo']);
+      assert.strictEqual(req.trailing, true);
+      seen = true;
+      return res.end();
+    });
+
+    const res = await client.request({
+      hostname: '127.0.0.1',
+      port: port,
+      headers: {},
+      method: 'GET',
+      path: '/routes/foo/'
+    });
+
+    assert.strictEqual(seen, true);
+    assert.strictEqual(res, '');
+  });
+
+  it('should navigate', async () => {
+    routes.post('/foo/bar', async (hreq, hres) => {
+      const req = new Request(hreq, hres, hreq.url);
+      req.navigate('bar');
+
+      assert.strictEqual(req.url, '/routes/foo/bar?a=1');
+      assert.strictEqual(req.pathname, '/bar');
+      assert.deepStrictEqual(req.path, ['bar']);
+
+      // Must have null prototype.
+      const query = Object.create(null);
+      query.a = '1';
+
+      assert.deepStrictEqual(req.query, query);
+
+      seen = true;
+      hres.end();
+    });
+
+    const res = await client.request({
+      hostname: '127.0.0.1',
+      port: port,
+      headers: {},
+      method: 'POST',
+      path: '/routes/foo/bar?a=1'
+    });
+
+    assert.strictEqual(seen, true);
+    assert.strictEqual(res, '');
   });
 });

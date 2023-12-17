@@ -62,6 +62,7 @@ describe('Utils', function() {
       assert.deepStrictEqual(parseURL('https://x:8080'), {
         url: '/',
         pathname: '/',
+        search: '',
         path: [],
         query: O({}),
         trailing: false
@@ -70,6 +71,7 @@ describe('Utils', function() {
       assert.deepStrictEqual(parseURL('https://x:8080/foo/bar?baz=1'), {
         url: '/foo/bar?baz=1',
         pathname: '/foo/bar',
+        search: '?baz=1',
         path: ['foo', 'bar'],
         query: O({ baz: '1' }),
         trailing: false
@@ -78,6 +80,7 @@ describe('Utils', function() {
       assert.deepStrictEqual(parseURL('http://x:8080/foo/bar?baz=1'), {
         url: '/foo/bar?baz=1',
         pathname: '/foo/bar',
+        search: '?baz=1',
         path: ['foo', 'bar'],
         query: O({ baz: '1' }),
         trailing: false
@@ -86,6 +89,7 @@ describe('Utils', function() {
       assert.deepStrictEqual(parseURL('http://x:8080//foo//bar?baz=1'), {
         url: '/foo/bar?baz=1',
         pathname: '/foo/bar',
+        search: '?baz=1',
         path: ['foo', 'bar'],
         query: O({ baz: '1' }),
         trailing: false
@@ -94,6 +98,7 @@ describe('Utils', function() {
       assert.deepStrictEqual(parseURL('/foo/bar//?baz=1'), {
         url: '/foo/bar?baz=1',
         pathname: '/foo/bar',
+        search: '?baz=1',
         path: ['foo', 'bar'],
         query: O({ baz: '1' }),
         trailing: true
@@ -102,6 +107,7 @@ describe('Utils', function() {
       assert.deepStrictEqual(parseURL('/foo//bar?baz=%21'), {
         url: '/foo/bar?baz=%21',
         pathname: '/foo/bar',
+        search: '?baz=%21',
         path: ['foo', 'bar'],
         query: O({ baz: '!' }),
         trailing: false
@@ -110,6 +116,7 @@ describe('Utils', function() {
       assert.deepStrictEqual(parseURL('/foo//bar/#foobar'), {
         url: '/foo/bar',
         pathname: '/foo/bar',
+        search: '',
         path: ['foo', 'bar'],
         query: O({}),
         trailing: true
@@ -118,6 +125,7 @@ describe('Utils', function() {
       assert.deepStrictEqual(parseURL('/foo//bar?baz=1#foobar'), {
         url: '/foo/bar?baz=1',
         pathname: '/foo/bar',
+        search: '?baz=1',
         path: ['foo', 'bar'],
         query: O({ baz: '1' }),
         trailing: false
@@ -126,6 +134,7 @@ describe('Utils', function() {
       assert.deepStrictEqual(parseURL('/foo%201//bar+2/?baz=1#foobar'), {
         url: '/foo%201/bar+2?baz=1',
         pathname: '/foo 1/bar+2',
+        search: '?baz=1',
         path: ['foo 1', 'bar+2'],
         query: O({ baz: '1' }),
         trailing: true
